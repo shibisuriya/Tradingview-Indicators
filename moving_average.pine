@@ -1,17 +1,20 @@
 //@version=5
 indicator("Switch using an expression", "", true)
 
-ma(source, length, type) =>
-    switch type
+
+
+timeframe = input.string(defval="1D", title="Time Frame", options=["60", "240", "1D", "1W", "1M"])
+length = input.int(defval=21, title="Lengh", options=[21, 50, 100, 150, 200])
+moving_average_type = input.string(defval="EMA", title="Moving average type", options=["EMA", "SMA"])
+
+ma(source, length) =>
+    switch moving_average_type
         "SMA" => ta.sma(source, length)
         "EMA" => ta.ema(source, length)
 
-timeframe = input.string(defval="D", title="Time Frame", options=["M", "D", "W", "H", "4H"])
-length = input.int(defval=21, title="Lengh", options=[21, 50, 100, 200])
- 
-high_data = request.security(syminfo.tickerid , timeframe, ta.ema(high, length))
-close_data = request.security(syminfo.tickerid, timeframe, ta.ema(close, length))
-low_data = request.security(syminfo.tickerid , timeframe, ta.ema(low, length))
+high_data = request.security(syminfo.tickerid , timeframe, ma(high, length))
+close_data = request.security(syminfo.tickerid, timeframe, ma(close, length))
+low_data = request.security(syminfo.tickerid , timeframe,  ma(low, length))
 
 
 
